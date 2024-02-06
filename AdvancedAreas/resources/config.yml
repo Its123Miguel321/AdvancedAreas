@@ -1,0 +1,47 @@
+# Configuration file for AdvancedAreas by Its123Miguel321
+
+# Config file version (Do not edit this!)
+config-version: 1.0
+
+
+# The data provider is where the area data is stored.
+# Accepted types of data providers: yaml, json, and sqlite
+data-provider: json
+
+
+# The AdvancedAreas wand item.
+# Default wand item: feather
+wand-item: feather
+
+
+# When entering an area, the name will be shown
+show-area-name: true
+# How the area name will be shown
+# Accepted types: title, popup, message
+area-name-type: popup
+
+
+# These are the default settings for areas!
+# DO NOT remove any of the events!
+default-area-settings:
+ priority: 5
+ banned-items: []
+ events:
+  block.break: true
+  block.decay: true
+  block.grow: true
+  block.place: true
+  block.update: true
+  entity.damage: true
+  entity.explosion: true
+  entity.regain-health: true
+  entity.teleport: true
+  player.craft: true
+  player.flight: true
+  player.interact: true
+  player.item-drop: true
+  player.item-pickup: true
+  player.sprint: true
+  player.hunger: true
+ effects: []
+ whitelist: []
