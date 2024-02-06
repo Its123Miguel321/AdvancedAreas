@@ -1,9 +1,0 @@
-name: AdvancedAreas
-main: Its123Miguel321\AdvancedAreas\AdvancedAreas
-api: [5.0.0]
-version: 1.0
-author: Its123Miguel321
-
-permissions:
- advancedareas.admin:
-  default: op
