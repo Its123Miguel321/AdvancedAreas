@@ -300,6 +300,7 @@ class EventListener implements Listener{
 		if($event->isCancelled()) return true;
 
 		$player = $event->getPlayer();
+		if (!($player instanceof Player)) return false;
 
 		if($player->getGamemode()->equals(GameMode::CREATIVE())) return false;
 
