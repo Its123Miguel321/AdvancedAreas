@@ -157,23 +157,28 @@ class EventListener implements Listener{
 		}
 	}
 
-	public function onAttack(EntityDamageEvent $event) : void{
-		if($event->isCancelled()) return;
+	public function onAttack(EntityDamageEvent $event): void
+	{
+		if ($event->isCancelled()) return;
 
 		$victim = $event->getEntity();
 
-		if($event instanceof EntityDamageByEntityEvent){
+		if ($event instanceof EntityDamageByEntityEvent) {
 			$attacker = $event->getDamager();
 
-			if(!($victim instanceof Player && $attacker instanceof Player)) return;
-			if($attacker->getGamemode()->equals(GameMode::CREATIVE())) return;
-			if(empty(($victimAreas = AreasAPI::getAreasIn($victim->getLocation()))) && empty(($attackerAreas = AreasAPI::getAreasIn($attacker->getLocation())))) return;
+			if (!($victim instanceof Player && $attacker instanceof Player)) return;
+			if ($attacker->getGamemode()->equals(GameMode::CREATIVE())) return;
+
+			$victimAreas = AreasAPI::getAreasIn($victim->getLocation());
+			$attackerAreas = AreasAPI::getAreasIn($attacker->getLocation());
+
+			if (empty($victimAreas) && empty($attackerAreas)) return;
 
 			$attackerArea = null;
 			$attackerPriority = -100;
 
-			foreach($attackerAreas as $area){
-				if($area->getPriority() <= $attackerPriority) continue;
+			foreach ($attackerAreas as $area) {
+				if ($area->getPriority() <= $attackerPriority) continue;
 
 				$attackerArea = $area;
 				$attackerPriority = $area->getPriority();
@@ -182,25 +187,26 @@ class EventListener implements Listener{
 			$victimArea = null;
 			$victimPriority = -100;
 
-			foreach($victimAreas as $area){
-				if($area->getPriority() <= $victimPriority) continue;
+			foreach ($victimAreas as $area) {
+				if ($area->getPriority() <= $victimPriority) continue;
 
 				$victimArea = $area;
 				$victimPriority = $area->getPriority();
 			}
 
-			if(is_null($victimArea) || is_null($attackerArea)) return;
+			if (is_null($victimArea) || is_null($attackerArea)) return;
 
 			$allow = ($victimArea->getEventValue(Flags::FLAG_EVENT_ENTITY_DAMAGE) && $attackerArea->getEventValue(Flags::FLAG_EVENT_ENTITY_DAMAGE) ? true : false);
 
-			if(!$allow){
+			if (!$allow) {
 				$event->cancel();
 				$attacker->sendMessage(TF::RED . 'You can not attack others in this area!');
 			}
-		}else{
+		} else {
 			$this->onEntityEvent($event, Flags::FLAG_EVENT_ENTITY_DAMAGE);
 		}
 	}
+
 
 	public function onExplode(EntityExplodeEvent $event) : void{
 		$this->onEntityEvent($event, Flags::FLAG_EVENT_ENTITY_EXPLOSION);
@@ -294,6 +300,7 @@ class EventListener implements Listener{
 		if($event->isCancelled()) return true;
 
 		$player = $event->getPlayer();
+		if (!($player instanceof Player)) return false;
 
 		if($player->getGamemode()->equals(GameMode::CREATIVE())) return false;
 

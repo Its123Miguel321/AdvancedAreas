@@ -17,7 +17,7 @@ class EditSelectAreaForm{
 		foreach(AdvancedAreas::getInstance()->getProvider()->getAll() as $area) $areas[] = $area->getDisplayName();
 
 		if(empty($areas)){
-			$player->sendMessage(TF::RED . 'There are no areas you can delete!');
+			$player->sendMessage(TF::RED . 'There are no areas you can edit!');
 			return;
 		}
 
