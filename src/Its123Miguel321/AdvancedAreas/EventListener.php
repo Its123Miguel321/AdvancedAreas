@@ -52,6 +52,9 @@ class EventListener implements Listener{
 		private AdvancedAreas $plugin
 	){}
 
+	/**
+	 * @priority HIGHEST
+	 */
 	public function onBreak(BlockBreakEvent $event) : void{
 		$player = $event->getPlayer();
 		$item = $event->getItem();
@@ -80,6 +83,9 @@ class EventListener implements Listener{
 		$player->sendMessage(TF::RED . 'You can not break blocks in this area!');
 	}
 
+	/**
+	 * @priority HIGHEST
+	 */
 	public function onInteract(PlayerInteractEvent $event) : void{
 		if($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) return;
 
@@ -110,6 +116,9 @@ class EventListener implements Listener{
 		$player->sendMessage(TF::RED . 'You can not interact with blocks in this area!');
 	}
 
+	/**
+	 * @priority HIGHEST
+	 */
 	public function onPlace(BlockPlaceEvent $event) : void{
 		$player = $event->getPlayer();
 
@@ -120,14 +129,23 @@ class EventListener implements Listener{
 		$player->sendMessage(TF::RED . 'You can not place blocks in this area!');
 	}
 
+	/**
+	 * @priority HIGHEST
+	 */
 	public function onDecay(LeavesDecayEvent $event) : void{
 		$this->onBlockEvent($event, Flags::FLAG_EVENT_BLOCK_DECAY);
 	}
 
+	/**
+	 * @priority HIGHEST
+	 */
 	public function onGrow(BlockGrowEvent $event) : void{
 		$this->onBlockEvent($event, Flags::FLAG_EVENT_BLOCK_GROW);
 	}
 
+	/**
+	 * @priority HIGHEST
+	 */
 	public function onUpdate(BlockUpdateEvent $event) : void{
 		$this->onBlockEvent($event, Flags::FLAG_EVENT_BLOCK_UPDATE);
 	}
@@ -157,7 +175,10 @@ class EventListener implements Listener{
 		}
 	}
 
-	public function onAttack(EntityDamageEvent $event) : void{
+	/**
+	 * @priority HIGHEST
+	 */
+	public function onDamage(EntityDamageEvent $event) : void{
 		if($event->isCancelled()) return;
 
 		$victim = $event->getEntity();
@@ -167,7 +188,11 @@ class EventListener implements Listener{
 
 			if(!($victim instanceof Player && $attacker instanceof Player)) return;
 			if($attacker->getGamemode()->equals(GameMode::CREATIVE())) return;
-			if(empty(($victimAreas = AreasAPI::getAreasIn($victim->getLocation()))) && empty(($attackerAreas = AreasAPI::getAreasIn($attacker->getLocation())))) return;
+
+			$victimAreas = AreasAPI::getAreasIn($victim->getLocation());
+			$attackerAreas = AreasAPI::getAreasIn($attacker->getLocation());
+
+			if(empty(array_merge($victimAreas, $attackerAreas))) return;
 
 			$attackerArea = null;
 			$attackerPriority = -100;
@@ -202,14 +227,23 @@ class EventListener implements Listener{
 		}
 	}
 
+	/**
+	 * @priority HIGHEST
+	 */
 	public function onExplode(EntityExplodeEvent $event) : void{
 		$this->onEntityEvent($event, Flags::FLAG_EVENT_ENTITY_EXPLOSION);
 	}
 
+	/**
+	 * @priority HIGHEST
+	 */
 	public function onRegainHealth(EntityRegainHealthEvent $event) : void{
 		$this->onEntityEvent($event, Flags::FLAG_EVENT_ENTITY_REGAIN_HEALTH);
 	}
 
+	/**
+	 * @priority HIGHEST
+	 */
 	public function onTeleport(EntityTeleportEvent $event) : void{
 		if(!$this->onEntityEvent($event, Flags::FLAG_EVENT_ENTITY_TELEPORT)) return;
 
@@ -218,6 +252,9 @@ class EventListener implements Listener{
 		if($entity instanceof Player) $entity->sendMessage(TF::RED . 'You can not teleport in this area!');
 	}
 
+	/**
+	 * @priority HIGHEST
+	 */
 	public function onPickup(EntityItemPickupEvent $event) : void{
 		$this->onEntityEvent($event, Flags::FLAG_EVENT_PLAYER_ITEM_PICKUP);
 	}
@@ -247,6 +284,9 @@ class EventListener implements Listener{
 		}
 	}
 
+	/**
+	 * @priority HIGHEST
+	 */
 	public function onCraft(CraftItemEvent $event) : void{
 		$player = $event->getPlayer();
 
@@ -257,6 +297,9 @@ class EventListener implements Listener{
 		if(!is_null($player->getCurrentWindow())) $player->removeCurrentWindow();
 	}
 
+	/**
+	 * @priority HIGHEST
+	 */
 	public function onDrop(PlayerDropItemEvent $event) : void{
 		$player = $event->getPlayer();
 
@@ -265,6 +308,9 @@ class EventListener implements Listener{
 		$player->sendMessage(TF::RED . 'You can not drop items in this area!');
 	}
 
+	/**
+	 * @priority HIGHEST
+	 */
 	public function onFly(PlayerToggleFlightEvent $event) : void{
 		$player = $event->getPlayer();
 
@@ -274,6 +320,9 @@ class EventListener implements Listener{
 		$player->sendMessage(TF::RED . 'You can not fly in this area!');
 	}
 
+	/**
+	 * @priority HIGHEST
+	 */
 	public function onSprint(PlayerToggleSprintEvent $event) : void{
 		$player = $event->getPlayer();
 
@@ -283,6 +332,9 @@ class EventListener implements Listener{
 		$player->sendMessage(TF::RED . 'You can not sprint in this area!');
 	}
 
+	/**
+	 * @priority HIGHEST
+	 */
 	public function onHunger(PlayerExhaustEvent $event) : void{
 		$this->onPlayerEvent($event, Flags::FLAG_EVENT_PLAYER_SPRINT);
 	}
@@ -315,6 +367,9 @@ class EventListener implements Listener{
 		}
 	}
 
+	/**
+	 * @priority HIGHEST
+	 */
 	public function onItemUse(PlayerItemUseEvent $event) : void{
 		if($event->isCancelled()) return;
 
@@ -337,6 +392,9 @@ class EventListener implements Listener{
 		
 	}
 
+	/**
+	 * @priority HIGHEST
+	 */
 	public function onMove(PlayerMoveEvent $event) : void{
 		if($event->isCancelled()) return;
 
