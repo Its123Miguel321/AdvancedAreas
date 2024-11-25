@@ -57,14 +57,14 @@ class OptionsForm{
 		$form->setTitle(TF::BOLD . TF::GOLD . 'Area ' . TF::WHITE . 'Options');
 		$form->addLabel($label);
 		$form->addInput('Priority', '-1', (string)AdvancedAreas::getInstance()->getSettings()->getDefaultAreaSettings()[Flags::FLAG_AREA_PRIORITY]);
-		$form->addLabel(TF::GRAY . 'Items listed here would not be allowed to use in this area!');
+		$form->addLabel(TF::GRAY . 'Items listed here cannot be used in this area.');
 		$form->addInput('Items', 'diamond_sword;bow;etc...');
-		$form->addToggle('Apply Items To Whitelist');
-		$form->addLabel(TF::GRAY . 'Effects listed here would be given upon entering the area!');
+		$form->addToggle('Should items apply to whitelist?');
+		$form->addLabel(TF::GRAY . 'Effects listed here will be applied upon entering the area.');
 		$form->addInput('Effects', 'night_vison-5;jump_boost-3;etc...');
-		$form->addToggle('Apply Effects To Whitelist');
+		$form->addToggle('Should effects apply to whitelist?');
 		$form->addInput('Whitelist', 'player_one;player_two;etc...');
-		$form->addLabel(TF::GRAY . 'This last option makes the area cover Y axis 0-256!');
+		$form->addLabel(TF::GRAY . 'This last option makes the area cover Y axis -64 to 256.');
 		$form->addToggle('Max Height', false);
 		$player->sendForm($form);
 	}

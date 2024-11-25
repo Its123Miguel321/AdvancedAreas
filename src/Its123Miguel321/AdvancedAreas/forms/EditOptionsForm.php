@@ -129,32 +129,32 @@ class EditOptionsForm{
 		$form->addLabel($label);
 		$form->addInput('Priority', '-1', (string)$area->getPriority());
 
-		$itemsLabel = TF::GRAY . "Items listed below are banned in this area!" . "\n";
+		$itemsLabel = TF::GRAY . "The following items are banned within this area." . "\n";
 		$itemsLabel .= (empty($area->getItems()) ? TF::AQUA . '(None)' : TF::RED . implode(TF::WHITE . ', ' . TF::RED, $area->getItems())) . "\n\n";
-		$itemsLabel .= TF::GRAY . "You can add or remove items in the input below!" . "\n";
-		$itemsLabel .= TF::YELLOW . "(Add an " . TF::GRAY . "|r" . TF::YELLOW . " after the item name, if you want to remove the item from the list!)" . "\n";
+		$itemsLabel .= TF::GRAY . "Items can be added or removed in the input below." . "\n";
+		$itemsLabel .= TF::YELLOW . "(Add an " . TF::GRAY . "|r" . TF::YELLOW . " after the item name, if you want to remove the item from the list.)" . "\n";
 
 		$form->addLabel($itemsLabel);
 		$form->addInput('Items', 'diamond_sword;wooden_shovel|r;etc...');
-		$form->addToggle('Apply Items To Whitelist', $area->getItemsApplyToWhitelist());
+		$form->addToggle('Should items apply to whitelist?', $area->getItemsApplyToWhitelist());
 
-		$effectsLabel = TF::GRAY . 'Effects listed here would be given upon entering the area!' . "\n";
+		$effectsLabel = TF::GRAY . 'Effects listed here will be applied upon entering the area.' . "\n";
 		$effectsLabel .= (empty($area->getEffects()) ? TF::AQUA . '(None)' : TF::RED . implode(TF::WHITE . ', ' . TF::RED, $area->getEffects())) . "\n\n";
-		$effectsLabel .= TF::GRAY . "You can add or remove effects in the input below!" . "\n";
-		$effectsLabel .= TF::YELLOW . "(Add an " . TF::GRAY . "|r" . TF::YELLOW . " after the effect name, if you want to remove the effect from the list!)" . "\n";
+		$effectsLabel .= TF::GRAY . "Effects can be added or removed in the input below." . "\n";
+		$effectsLabel .= TF::YELLOW . "(Add an " . TF::GRAY . "|r" . TF::YELLOW . " after the effect name, if you want to remove the effect from the list.)" . "\n";
 
 		$form->addLabel($effectsLabel);
 		$form->addInput('Effects', 'night_vison-5;jump_boost|r;etc...');
-		$form->addToggle('Apply Effects To Whitelist', $area->getEffectsApplyToWhitelist());
+		$form->addToggle('Should effects apply to whitelist?', $area->getEffectsApplyToWhitelist());
 
 		$whitelistLabel = TF::GRAY . 'These are the whitelisted players of this area!' . "\n";
 		$whitelistLabel .= (empty($area->getWhitelist()) ? TF::AQUA . '(None)' : TF::RED . implode(TF::WHITE . ', ' . TF::RED, $area->getWhitelist())) . "\n\n";
-		$whitelistLabel .= TF::GRAY . "You can add or remove players in the input below!" . "\n";
+		$whitelistLabel .= TF::GRAY . "Players can be added or removed in the input below." . "\n";
 		$whitelistLabel .= TF::YELLOW . "(Add an " . TF::GRAY . "|r" . TF::YELLOW . " after the player name, if you want to remove the player from the list!)" . "\n";
 
 		$form->addLabel($whitelistLabel);
 		$form->addInput('Whitelist', 'player_one;player_two|r;etc...');
-		$form->addLabel(TF::GRAY . 'This last option will change the areas positions to your current selected postions! ' . TF::RED . '(Be Careful!)');
+		$form->addLabel(TF::GRAY . 'This last option will update the area positions to your currently selected positions. ' . TF::RED . '(Be Careful!)');
 		$form->addToggle('Change Positions', false);
 		$player->sendForm($form);
 	}
