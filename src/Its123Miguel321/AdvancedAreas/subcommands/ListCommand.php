@@ -34,7 +34,7 @@ class ListCommand extends SubCommand{
 			return false;
 		}
 
-		$areas = array_chunk($areas, (int) $sender->getScreenLineHeight() / 2);
+		$areas = array_chunk($areas, (int) ($sender->getScreenLineHeight() / 2));
 		$pageNumber = min(count($areas), $pageNumber);
 
 		$list = TF::GRAY . str_repeat(' - ', 3) . TF::BOLD . TF::DARK_GREEN . 'List Page' . TF::RESET . TF::GRAY . str_repeat(' -', 3) . "\n\n";
