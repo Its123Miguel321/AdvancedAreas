@@ -3,7 +3,7 @@ A PocketMine-MP plugin which lets you create advanced areas!
 
 ## Features
 ### Priority
-Every area has its own priority. 
+Every area has its own priority, so you can have overlapping areas.
 ### Control Events
 You can disable/enable events for each area!
 - Block Breaking
@@ -12,6 +12,7 @@ You can disable/enable events for each area!
 - Item Pickup
 - Entity Damage
 - Entity Regain Health
+- Entity Teleport (advancedarea.bypass.teleport permission so staff can bypass)
 - Much more events...!
 
 ### Effects
