@@ -1,9 +1,11 @@
 name: AdvancedAreas
 main: Its123Miguel321\AdvancedAreas\AdvancedAreas
 api: [5.0.0]
-version: 1.0.1
+version: 1.0.2
 author: Its123Miguel321
 
 permissions:
  advancedareas.admin:
+  default: op
+ advancedareas.bypass.teleport:
   default: op
