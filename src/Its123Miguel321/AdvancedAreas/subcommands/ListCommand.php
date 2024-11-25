@@ -37,13 +37,13 @@ class ListCommand extends SubCommand{
 		$areas = array_chunk($areas, (int) ($sender->getScreenLineHeight() / 2));
 		$pageNumber = min(count($areas), $pageNumber);
 
-		$list = TF::GRAY . str_repeat(' - ', 3) . TF::BOLD . TF::DARK_GREEN . 'List Page' . TF::RESET . TF::GRAY . str_repeat(' -', 3) . "\n\n";
+		$list = TF::GRAY . str_repeat(' - ', 3) . TF::BOLD . TF::DARK_GREEN . 'Showing Areas list page ' . TF::WHITE . $pageNumber . TF::DARK_GREEN . " of " . TF::WHITE . count($areas) . TF::RESET . TF::GRAY . str_repeat(' -', 3) . "\n\n";
 		
 		foreach($areas[$pageNumber - 1] as $area){
 			$list .= TF::DARK_GREEN . ucfirst($area->getDisplayName()) . TF::GRAY .  " (World: " . (is_null(($world = $area->getWorld())) ? "Unknown" : $world->getFolderName()) . ")" . TF::RESET ."\n";
 		}
 		
-		$list .= TF::GRAY . str_repeat(' - ', 10);
+		$list .= TF::GRAY . str_repeat(' - ', 18);
 		
 		$sender->sendMessage($list);
 		return true;
