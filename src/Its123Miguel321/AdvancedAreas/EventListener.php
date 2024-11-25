@@ -21,8 +21,8 @@ use pocketmine\event\block\{
 };
 use pocketmine\event\entity\{
 	EntityDamageByEntityEvent,
-    EntityDamageEvent,
-    EntityExplodeEvent,
+	EntityDamageEvent,
+	EntityExplodeEvent,
 	EntityItemPickupEvent,
 	EntityRegainHealthEvent,
 	EntityTeleportEvent
@@ -40,6 +40,7 @@ use pocketmine\event\player\{
 };
 use pocketmine\player\GameMode;
 use pocketmine\player\Player;
+use pocketmine\utils\Limits;
 use pocketmine\utils\TextFormat as TF;
 
 class EventListener implements Listener{
@@ -403,91 +404,146 @@ class EventListener implements Listener{
 
 		$player = $event->getPlayer();
 		$from = $event->getFrom();
-		$areasFrom = AreasAPI::getAreasIn($from);
 		$to = $event->getTo();
+
+		$areasFrom = AreasAPI::getAreasIn($from);
 		$areasTo = AreasAPI::getAreasIn($to);
-		$enteringArea = (AreasAPI::isInside($to) && !AreasAPI::isInside($from));
-		$enteringNewArea = (count($areasTo) > count($areasFrom));
-		$leavingArea = (count($areasTo) < count($areasFrom));
+
+		$enteringArea = (!AreasAPI::isInside($from) && AreasAPI::isInside($to));
+		$enteringNewArea = (!empty($areasTo) && !AreasAPI::inSameAreas($to, $from, true));
+		$leavingArea = (!empty($areasFrom) && (count($areasFrom) > count($areasTo) || !AreasAPI::inSameAreas($to, $from, true) && count($areasFrom) == count($areasTo)));
+		$leavingAllAreas = (!empty($areasFrom) && empty($areasTo));
 
 		if(
 			AdvancedAreas::getInstance()->getSettings()->showAreaNames() && 
-			!AreasAPI::inSameAreas($to, $from, false) && 
-			(AreasAPI::isInside($from) || AreasAPI::isInside($to))
+			(AreasAPI::isInside($from) || AreasAPI::isInside($to)) && 
+			($enteringArea || $enteringNewArea || $leavingArea || $leavingAllAreas)
 		){
 			$areaNames = [];
+			$bothActions = (($enteringArea || $enteringNewArea) && ($leavingArea || $leavingAllAreas));
 
-			foreach((($enteringArea || $enteringNewArea) ? $areasTo : $areasFrom) as $area){
-				$areas = (($enteringArea || $enteringNewArea) ? $areasFrom : $areasTo);
-
-				if(in_array($area->getIdentifier(), array_keys($areas))) continue;
-
-				$areaNames[] = $area->getDisplayName();
+			if($bothActions){
+				$area0 = $areasTo;
+	
+				foreach($area0 as $key => $area) $area0[$key] = $area->getDisplayName();
+	
+				$area1 = $areasFrom;
+	
+				foreach($area1 as $key => $area) $area1[$key] = $area->getDisplayName();
+	
+				$area0 = array_filter($area0, function(string $name) use($area1){
+					return !in_array($name, array_values($area1));
+				});
+	
+				$areaNames = [
+					0 => $area0,
+					1 => $area1
+				];
+			}else{
+				foreach((($enteringArea || $enteringNewArea) ? $areasTo : $areasFrom) as $area){
+					$areas = (($enteringArea || $enteringNewArea) ? $areasFrom : $areasTo);
+	
+					if(in_array($area->getIdentifier(), array_keys($areas))) continue;
+	
+					$areaNames[] = $area->getDisplayName();
+				}
 			}
 
 			if(!empty($areaNames)){
 				$type = AdvancedAreas::getInstance()->getSettings()->getAreaNameType();
-				$msg = (($enteringArea || $enteringNewArea) ? TF::GREEN . 'Entering' : TF::RED . 'Leaving') . ' Area' . (count($areaNames) > 1 ? 's' : '');
-				
+	
+				if($bothActions){
+					$msg1 = TF::GREEN . 'Entering Area' . (count($areaNames[0]) > 1 ? 's' : '') . ': ';
+					$msg2 = TF::RED . 'Leaving Area' . (count($areaNames[1]) > 1 ? 's' : '') . ': ';
+				}else{
+					$msg = (($enteringArea || $enteringNewArea) ? TF::GREEN . 'Entering' : TF::RED . 'Leaving') . ' Area' . (count($areaNames) > 1 ? 's' : '');
+				}
+	
 				switch(strtolower($type)){
 					case 'title':
-						$player->sendTitle(
-							$msg,
-							TF::GRAY . implode(TF::WHITE . ', ' . TF::GRAY, $areaNames)
-						);
+						if($bothActions){
+							$player->sendTitle(
+								$msg1 . TF::GRAY . implode(TF::WHITE . ', ' . TF::GRAY, $areaNames[0]),
+								$msg2 . TF::GRAY . implode(TF::WHITE . ', ' . TF::GRAY, $areaNames[1])
+							);
+						}else{
+							$player->sendTitle(
+								$msg1,
+								TF::GRAY . implode(TF::WHITE . ', ' . TF::GRAY, $areaNames)
+							);
+						}
 						break;
-
+	
 					case 'message':
-						$msg .= ": " . TF::GRAY . implode(TF::WHITE . ', ' . TF::GRAY, $areaNames);
-
-						$player->sendMessage($msg);
+						if($bothActions){
+							$player->sendMessage($msg1 . TF::GRAY . implode(TF::WHITE . ', ' . TF::GRAY, $areaNames[0]));
+							$player->sendMessage($msg2 . TF::GRAY . implode(TF::WHITE . ', ' . TF::GRAY, $areaNames[1]));
+						}else{
+							$msg .= ": " . TF::GRAY . implode(TF::WHITE . ', ' . TF::GRAY, $areaNames);
+	
+							$player->sendMessage($msg);
+						}
 						break;
-
+	
 					case 'popup':
 					default:
-						$msg .= "\n" . TF::GRAY . implode(TF::WHITE . ', ' . TF::GRAY, $areaNames);
-
-						$player->sendPopup($msg);	
+						if($bothActions){
+							$msg = $msg1 . "\n";
+							$msg .= TF::GRAY . implode(TF::WHITE . ', ' . TF::GRAY, $areaNames[0]) . "\n";
+							$msg .= $msg2 . "\n";
+							$msg .= TF::GRAY . implode(TF::WHITE . ', ' . TF::GRAY, $areaNames[1]);
+	
+							$player->sendPopup($msg);
+						}else{
+							$msg .= "\n" . TF::GRAY . implode(TF::WHITE . ', ' . TF::GRAY, $areaNames);
+	
+							$player->sendPopup($msg);
+						}
 				}
 			}
 		}
 
-		if($leavingArea){
+		if($leavingArea || $leavingAllAreas){
 			foreach($areasFrom as $area){
 				if(AreasAPI::inSameArea($to, $area)) continue;
-
+	
 				foreach($area->getEffects() as $effectData){
+					foreach($areasTo as $areaTo){
+						if($areaTo->hasEffect($effectData)) continue 2;
+					}
+	
 					$effectData = explode('-', $effectData);
 					$effect = $effectData[0];
 					$level = $effectData[1] ?? 1;
-
+	
 					$effect = StringToEffectParser::getInstance()->parse($effect);
-
+	
 					if(is_null($effect)) continue;
-
-					$effectInstance = new EffectInstance($effect, null, $level, false);
+	
+					$effectInstance = new EffectInstance($effect, Limits::INT32_MAX, $level, false);
 					$allow = !($area->inWhitelist($player) ? $area->getEffectsApplyToWhitelist() && $area->hasEffect($effectInstance) : $area->hasEffect($effectInstance));
-
+	
 					if($allow) $player->getEffects()->remove($effect);
 				}
 			}
-			return;
 		}
 
 		if($enteringArea || $enteringNewArea){
-			foreach(AreasAPI::getAreasIn($to) as $area){
+			foreach($areasTo as $area){
+				if(AreasAPI::inSameArea($from, $area)) continue;
+	
 				foreach($area->getEffects() as $effectData){
 					$effectData = explode('-', $effectData);
 					$effect = $effectData[0];
 					$level = $effectData[1] ?? 1;
-
+	
 					$effect = StringToEffectParser::getInstance()->parse($effect);
-
+	
 					if(is_null($effect)) continue;
-
-					$effectInstance = new EffectInstance($effect, null, $level, false);
+	
+					$effectInstance = new EffectInstance($effect, Limits::INT32_MAX, $level, false);
 					$allow = !($area->inWhitelist($player) ? $area->getEffectsApplyToWhitelist() && $area->hasEffect($effectInstance) : $area->hasEffect($effectInstance));
-
+	
 					if($allow) $player->getEffects()->add($effectInstance);
 				}
 			}
