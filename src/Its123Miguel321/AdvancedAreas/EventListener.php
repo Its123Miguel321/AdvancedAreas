@@ -245,9 +245,12 @@ class EventListener implements Listener{
 	 * @priority HIGHEST
 	 */
 	public function onTeleport(EntityTeleportEvent $event) : void{
-		if(!$this->onEntityEvent($event, Flags::FLAG_EVENT_ENTITY_TELEPORT)) return;
-
 		$entity = $event->getEntity();
+
+		if(!($entity instanceof Player)) return;
+		if($entity->hasPermission("advancedareas.bypass.teleport")) return;
+
+		if(!$this->onEntityEvent($event, Flags::FLAG_EVENT_ENTITY_TELEPORT)) return;
 		
 		if($entity instanceof Player) $entity->sendMessage(TF::RED . 'You can not teleport in this area!');
 	}
