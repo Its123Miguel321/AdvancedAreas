@@ -8,8 +8,6 @@ trait WhitelistHandlingTrait{
 
 	protected array $whitelist = [];
 
-
-
 	public function inWhitelist(Player|string $player) : bool{
 		if($player instanceof Player) $player = $player->getName();
 

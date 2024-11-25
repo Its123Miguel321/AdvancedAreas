@@ -11,8 +11,6 @@ trait EffectsHandlingTrait{
 	protected array $effects = [];
 	protected bool $effectsForWhitelist = false;
 
-
-
 	public function hasEffect(EffectInstance|string $effect) : bool{
 		if($effect instanceof EffectInstance){
 			$effect = ($effect->getType()->getName() instanceof Translatable ? Server::getInstance()->getLanguage()->translate($effect->getType()->getName()) : $effect->getType()->getName()) . '-' . $effect->getEffectLevel();

@@ -14,13 +14,10 @@ use pocketmine\Server;
 use pocketmine\world\World;
 
 class Area{
-
 	use EffectsHandlingTrait;
 	use EventsHandlingTrait;
 	use ItemsHandlingTrait;
 	use WhitelistHandlingTrait;
-
-
 
 	public function __construct(
 		private string $identifier,
@@ -48,36 +45,36 @@ class Area{
 
 	public function getDisplayName() : string{ return $this->displayName; }
 
-	public function setDisplayName(string $name): void{
+	public function setDisplayName(string $name) : self{
 		$this->displayName = $name;
+		return $this;
 	}
-
 
 	public function getPositionA() : Vector3{ return $this->posA; }
 
-
-	public function setPosA(Vector3 $pos) : void{
+	public function setPosA(Vector3 $pos) : self{
 		$this->posA = $pos;
-	}
 
+		return $this;
+	}
 
 	public function getPositionB() : Vector3{ return $this->posB; }
 
-
-	public function setPosB(Vector3 $pos) : void{
+	public function setPosB(Vector3 $pos) : self{
 		$this->posB = $pos;
-	}
 
+		return $this;
+	}
 
 	public function getWorld() : ?World{
 		return Server::getInstance()->getWorldManager()->getWorldByName($this->worldName);;
 	}
 
-
 	public function getPriority() : int{ return $this->priority; }
 
-
-	public function setPriority(int $priority) : void{
+	public function setPriority(int $priority) : self{
 		$this->priority = $priority;
+
+		return $this;
 	}
 }

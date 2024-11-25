@@ -6,8 +6,6 @@ trait EventsHandlingTrait{
 
 	protected array $events = [];
 
-
-
 	public function getEventValue(string $event) : bool{
 		return $this->events[$event];
 	}

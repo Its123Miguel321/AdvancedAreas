@@ -9,8 +9,6 @@ trait ItemsHandlingTrait{
 	protected array $items = [];
 	protected bool $itemsForWhitelist = false;
 
-
-
 	public function hasItem(Item|string $item) : bool{
 		if($item instanceof Item) $item = $item->getVanillaName();
 
