@@ -10,7 +10,8 @@ use Its123Miguel321\AdvancedAreas\subcommands\{
 	DeleteCommand,
 	EditCommand,
 	HelpCommand,
-	SubCommand,
+    ListCommand,
+    SubCommand,
 	WandCommand
 };
 
@@ -42,6 +43,7 @@ class Commands extends Command implements PluginOwned{
 		self::loadSubCommand(new EditCommand($plugin, 'edit', 'Edits an area'));
 		self::loadSubCommand(new HelpCommand($plugin, 'help', 'Shows help page'));
 		self::loadSubCommand(new WandCommand($plugin, 'wand', 'Gets AdvancedAreas wand'));
+		self::loadSubCommand(new ListCommand($plugin, "list", "Gives a list of areas"));
 	}
 
 	public static function loadSubCommand(SubCommand $command) : void{
